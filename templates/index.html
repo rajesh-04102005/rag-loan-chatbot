@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahaay Loans</title>
+
+    <style>
+        :root {
+            --primary: #002244;
+            --secondary: #f2a900;
+            --accent: #141004;
+            --light: #f4f7f9;
+            --text: #333;
+            --white: #ffffff;
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        @media (max-width: 850px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover { background: var(--primary); }
+
+        .results-box {
+            background: #e3f2fd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .cibil-display {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .score-val { font-size: 2.5rem; font-weight: bold; margin: 0; }
+        .rating-badge { font-weight: bold; font-size: 0.85rem; }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏛️ Sahaay Loans</h1>
+    <p>Get instant eligibility checks and AI-powered guidance</p>
+</header>
+
+<div class="container">
+
+    <!-- LEFT SECTION -->
+    <section class="card">
+        <h2>Loan Calculator</h2>
+
+        <div class="form-group">
+            <label>Monthly Income (₹)</label>
+            <input type="number" id="income" placeholder="e.g. 60000">
+        </div>
+
+        <div class="form-group">
+            <label>Loan Purpose</label>
+            <select id="loanType">
+                <option value="home">Home Loan (8.5%)</option>
+                <option value="education">Education Loan (10.0%)</option>
+                <option value="agri">Agricultural Loan (7.0%)</option>
+                <option value="medical">Medical Loan (12.0%)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Desired Tenure (Years)</label>
+            <input type="number" id="tenure" placeholder="e.g. 15">
+        </div>
+
+        <button onclick="calculateAdvisory()">Generate Advisory Report</button>
+
+        <div id="results" class="results-box" style="display:none;">
+            <h4>Advisory Report</h4>
+            <p id="emiResult"></p>
+            <p id="eligibilityResult"></p>
+            <p id="totalPayable"></p>
+        </div>
+    </section>
+
+    <!-- RIGHT SECTION -->
+    <div>
+
+        <section class="card">
+            <h2>Why Planning Matters</h2>
+            <p>
+                Choosing the wrong loan can lead to a <b>debt trap</b>.
+                We ensure EMI never exceeds 50% of your income.
+            </p>
+            <ul>
+                <li><b>Home Loans:</b> Long tenure, low interest</li>
+                <li><b>Agri Loans:</b> Subsidized for farmers</li>
+                <li><b>Education:</b> Moratorium benefits</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>CIBIL Score Checker</h2>
+
+            <div class="form-group">
+                <label>PAN Card Number</label>
+                <input type="text" id="pan" maxlength="10" placeholder="ABCDE1234F" style="text-transform: uppercase;">
+            </div>
+
+            <button onclick="checkCIBIL()" style="background: var(--primary);">
+                Check My Score
+            </button>
+
+            <div id="cibil-results" class="cibil-display">
+                <p class="rating-badge" id="cibil-label"></p>
+                <h3 class="score-val" id="cibil-score">---</h3>
+                <p id="cibil-comment"></p>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<iframe
+    src="/chatbot"
+    style="
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 340px;
+        height: 520px;
+        border: none;
+        z-index: 9999;
+    ">
+</iframe>
+
+
+<script>
+    function calculateAdvisory() {
+        const income = parseFloat(document.getElementById('income').value);
+        const years = parseInt(document.getElementById('tenure').value);
+        const type = document.getElementById('loanType').value;
+
+        if (!income || !years) {
+            alert("Please enter all details");
+            return;
+        }
+
+        const rates = { home: 8.5, education: 10, agri: 7, medical: 12 };
+        const r = rates[type] / 12 / 100;
+        const n = years * 12;
+
+        const maxEmi = income * 0.5;
+        const principal = maxEmi / ((r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+
+        document.getElementById('results').style.display = "block";
+        document.getElementById('emiResult').innerHTML = `<b>Monthly EMI Limit:</b> ₹${Math.round(maxEmi).toLocaleString()}`;
+        document.getElementById('eligibilityResult').innerHTML = `<b>Max Eligible Loan:</b> ₹${Math.round(principal).toLocaleString()}`;
+        document.getElementById('totalPayable').innerHTML = `<b>Total Payable:</b> ₹${Math.round(maxEmi * n).toLocaleString()}`;
+    }
+
+    function checkCIBIL() {
+        const pan = document.getElementById('pan').value;
+        if (pan.length < 10) {
+            alert("Enter valid PAN");
+            return;
+        }
+
+        const score = Math.floor(Math.random() * (850 - 600) + 600);
+        document.getElementById('cibil-results').style.display = "block";
+        document.getElementById('cibil-score').innerText = score;
+
+        if (score >= 750) {
+            document.getElementById('cibil-label').innerText = "Excellent Credit Health";
+            document.getElementById('cibil-score').style.color = "green";
+            document.getElementById('cibil-comment').innerText = "You qualify for best rates.";
+        } else {
+            document.getElementById('cibil-label').innerText = "Fair Credit Health";
+            document.getElementById('cibil-score').style.color = "red";
+            document.getElementById('cibil-comment').innerText = "Improve credit usage.";
+        }
+    }
+</script>
+
+</body>
+</html>

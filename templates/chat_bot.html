@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sahaay AI Chatbot</title>
+
+    <style>
+        :root {
+            --primary: #002244;
+            --secondary: #f2a900;
+            --text: #333;
+            --white: #ffffff;
+        }
+
+        /* CHATBOT UI */
+        #chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 500px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            z-index: 1000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+        }
+
+        #chat-history {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .msg {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            max-width: 85%;
+            font-size: 0.9rem;
+        }
+
+        .user-msg {
+            background: var(--secondary);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .bot-msg {
+            background: #f1f3f5;
+            color: #333;
+            line-height: 1.5;
+            font-size: 0.92rem;
+        }
+
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        #user-query {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        #send-btn {
+            width: 70px;
+            margin-left: 5px;
+            padding: 8px;
+            font-size: 0.9rem;
+            border: none;
+            background: var(--secondary);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="chat-widget">
+    <div id="chat-header">🤖 Sahaay AI Assistant</div>
+
+    <div id="chat-history">
+        <div class="msg bot-msg">
+            Hello! I am your loan expert. Ask me about Home, Education, Agri, or Medical loans.
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" id="user-query" placeholder="Ask about any loan type...">
+        <button id="send-btn" onclick="handleChat()">Ask</button>
+    </div>
+</div>
+
+<script>
+async function handleChat() {
+    const inputField = document.getElementById('user-query');
+    const history = document.getElementById('chat-history');
+    const query = inputField.value.trim();
+
+    if (!query) return;
+
+    history.innerHTML += `<div class="msg user-msg">${query}</div>`;
+    inputField.value = "";
+    history.scrollTop = history.scrollHeight;
+
+    history.innerHTML += `<div class="msg bot-msg"><i>Thinking...</i></div>`;
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: query })
+    });
+
+    const data = await response.json();
+
+    const bots = document.querySelectorAll('.bot-msg');
+    bots[bots.length - 1].innerHTML = data.reply
+    .replace(/\n/g, "<br>")
+    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+    history.scrollTop = history.scrollHeight;
+}
+</script>
+</body>
+</html>
