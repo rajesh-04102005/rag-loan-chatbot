@@ -9,7 +9,4 @@ __pycache__/
 *.pyc
 
 # OS files
-.DS_Store.vscode/
-
-
-
+.DS_Store
