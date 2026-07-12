@@ -6,9 +6,11 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-    
-FAISS_INDEX_PATH = r"E:\Rajesh Resume projects\Rag_Application\index\faiss.index"
-DOCS_PATH = r"E:\Rajesh Resume projects\Rag_Application\index\documents.npy"
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+FAISS_INDEX_PATH = os.path.join(BASE_DIR, "index", "faiss.index")
+DOCS_PATH = os.path.join(BASE_DIR, "index", "documents.npy")
 
 
 client = genai.Client(
@@ -17,8 +19,7 @@ client = genai.Client(
 
 
 model = SentenceTransformer(
-    "all-MiniLM-L6-v2",
-    local_files_only=True   
+    "all-MiniLM-L6-v2",  
 )
 
 index = faiss.read_index(FAISS_INDEX_PATH)
